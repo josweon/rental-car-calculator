@@ -11,15 +11,19 @@ public class RentalCalculator {
 
         String pickupDate = getDate(scanner);
         int rentalDuration = getDuration(scanner);
-        double tagPrice = addTollTag(scanner);
-        double gpsPrice = addGPS(scanner);
+        boolean tagPrice = addTollTag(scanner);
+        boolean gpsPrice = addGPS(scanner);
         double surcharge = getSurcharge(scanner);
 
-        double optionalCost = tagPrice + gpsPrice;
-
         System.out.println("---");
-        displayReceipt(pickupDate, rentalDuration, optionalCost, surcharge);
 
+        displayReceipt(
+                pickupDate,
+                rentalDuration,
+                gpsPrice,
+                tagPrice,
+                surcharge
+        );
     }
 
     public static String getDate(Scanner scanner) {
@@ -35,28 +39,30 @@ public class RentalCalculator {
         return duration;
     }
 
-    public static float addTollTag(Scanner scanner) { // TODO: Add bool functionality
+    public static boolean addTollTag(Scanner scanner) {
         System.out.print("electronic toll tag at $3.95/day (yes/no)? ");
-        String response = scanner.nextLine();
+        String input = scanner.nextLine();
 
-        float addOnTag = switch (response) {
-            case "yes" -> 3.95f;
-            case "no" -> 0;
-            default -> 0;
-        };
-        return addOnTag;
+        boolean hasAddOn = false;
+        if (input.equals("yes")) {
+            hasAddOn = true;
+        } else if (input.equals("no")) {
+            hasAddOn = false;
+        }
+        return hasAddOn;
     }
 
-    public static float addGPS(Scanner scanner) { // TODO: Add bool functionality
+    public static boolean addGPS(Scanner scanner) {
         System.out.print("GPS at $2.95/day (yes/no) ");
         String response = scanner.nextLine();
 
-        float addOnGPS = switch (response) {
-            case "yes" -> 2.95f;
-            case "no" -> 0;
-            default -> 0;
-        };
-        return addOnGPS;
+        boolean hasAddOn = false;
+        if (response.equals("yes")) {
+            hasAddOn = true;
+        } else if (response.equals("no")) {
+            hasAddOn = false;
+        }
+        return hasAddOn;
     }
 
     public static double getSurcharge(Scanner scanner) {
@@ -70,32 +76,49 @@ public class RentalCalculator {
         } else {
             surcharge = 0;
         }
-
         return surcharge;
     }
 
-    public static void displayReceipt(String pickUpDate, int rentalDuration,
-                                      double optionalCost, double surcharge) {
-        // TODO: Implement clean optional price functionality
-        // TODO: Clean up display text
+    public static void displayReceipt(
+            String pickUpDate,
+            int rentalDuration,
+            boolean hasGPS,
+            boolean tollTag,
+            double surcharge
+    ) {
 
         double rentalPrice = baseRentalPrice * rentalDuration;
-        System.out.printf("The basic car rental is $%.2f, which starts on %s.", baseRentalPrice, pickUpDate);
-        System.out.printf("You'll have the rental for %d days which totals to $%.2f\n", rentalDuration, rentalPrice);
-        System.out.printf("Total optional price is $%.2f\n", optionalCost);
+        System.out.printf("The basic car rental is $%.2f, which starts on %s.\n", baseRentalPrice, pickUpDate);
+        System.out.printf("You'll have the rental for %d days which totals to $%.2f.\n", rentalDuration, rentalPrice);
 
-        double surchargeCost = rentalPrice + (rentalPrice * surcharge);
-        if (surchargeCost == rentalPrice) {
-            System.out.print("There is no surcharge on the basic rental price for drivers over 25.\n");
+        double optionalCost;
+        if (hasGPS && tollTag) {
+            optionalCost = (3.95 + 2.95) * rentalDuration;
+            System.out.printf("You opted to add the electronic toll tag and the GPS which comes out to $%.2f.\n", optionalCost);
+        } else if (tollTag) {
+            optionalCost = 3.95 * rentalDuration;
+            System.out.printf("You opted to add the electronic toll tag which adds $%.2f to your total.\n", optionalCost);
+        } else if (hasGPS) {
+            optionalCost = 2.95 * rentalDuration;
+            System.out.printf("You opted to add on GPS which adds $%.2f to your total\n", optionalCost);
         } else {
-            System.out.print("There is a 30% surcharge on the basic car rental for drivers under 25.\n" );
+            System.out.print("You have no add ons.\n");
+            optionalCost = 0;
         }
 
-        System.out.println(" All taxes have already been incorporated into the fees shown.");
+        double subTotal = optionalCost + rentalPrice;
+        double surchargeCost = subTotal + (subTotal * surcharge);
+
+        if (surcharge > 0) {
+            System.out.print("There is a 30% surcharge on the basic car rental for drivers under 25.\n" );
+        } else {
+            System.out.print("There is no surcharge on the basic rental price for drivers over 25.\n");
+        }
+
+        System.out.println("All taxes have already been incorporated into the fees shown.");
+        System.out.println("---");
 
         double totalPrice = rentalPrice + surchargeCost + optionalCost;
-        System.out.printf("Your grand total is $%.2f", totalPrice);
-
+        System.out.printf("Your grand total is $%.2f\n", totalPrice);
     }
-
 }
