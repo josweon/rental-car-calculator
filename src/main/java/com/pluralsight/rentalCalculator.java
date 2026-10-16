@@ -2,7 +2,10 @@ package com.pluralsight;
 
 import java.util.*;
 
+
 public class rentalCalculator {
+
+    static float baseRentalPrice = 29.99f;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -48,6 +51,13 @@ public class rentalCalculator {
         System.out.print("your age? ");
         return scanner.nextInt();
     }
+
+    public static void displayReceipt(String pickUpDate, int rentalDuration,
+                                      float rentalPrice, float optionalCost, int driverAge) {
+
+
+    }
+
 
 
 }
