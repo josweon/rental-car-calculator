@@ -13,11 +13,10 @@ public class RentalCalculator {
         int rentalDuration = getDuration(scanner);
         double tagPrice = addTollTag(scanner);
         double gpsPrice = addGPS(scanner);
-//        int driverAge = getAge(scanner);
+        double surcharge = getSurcharge(scanner);
 
-        double rentalPrice = baseRentalPrice * rentalDuration;
         double optionalCost = tagPrice + gpsPrice;
-        displayReceipt(pickupDate, rentalDuration, rentalPrice, optionalCost, driverAge);
+        displayReceipt(pickupDate, rentalDuration, optionalCost, surcharge);
 
     }
 
@@ -58,7 +57,7 @@ public class RentalCalculator {
         return addOnGPS;
     }
 
-    public static double getAge(Scanner scanner) {
+    public static double getSurcharge(Scanner scanner) {
         System.out.print("your age? ");
         String input = scanner.nextLine();
         int age = Integer.parseInt(input);
@@ -66,18 +65,33 @@ public class RentalCalculator {
         double surcharge;
         if (age < 25) {
             surcharge = 0.3;
+        } else {
+            surcharge = 0;
         }
+
+        return surcharge;
     }
 
     public static void displayReceipt(String pickUpDate, int rentalDuration,
-                                      double rentalPrice, double optionalCost, int driverAge) {
+                                      double optionalCost, double surcharge) {
         // Implement as a receipt
+        double rentalPrice = baseRentalPrice * rentalDuration;
         System.out.printf("The basic car rental is $%.2f, which starts on %s.", baseRentalPrice, pickUpDate);
         System.out.printf("You'll have the rental for %d days which totals to $%.2f\n", rentalDuration, rentalPrice);
         System.out.printf("Total optional price is $%.2f\n", optionalCost);
-        System.out.print(driverAge);
-//        if
-//        System.out.printf("You opted for ");
+
+        double surchargeCost = rentalPrice + (rentalPrice * surcharge);
+        if (surchargeCost == rentalPrice) {
+            System.out.print("There is no surcharge on the basic rental price for drivers over 25.\n");
+        } else {
+            System.out.print("There is a 30% surcharge on the basic car rental for drivers under 25.\n" );
+        }
+
+        System.out.println(" All taxes have already been incorporated into the fees shown.");
+
+        double totalPrice = rentalPrice + surchargeCost + optionalCost;
+        System.out.printf("Your grand total is $%.2f", totalPrice);
+
     }
 
 
