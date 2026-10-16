@@ -16,6 +16,8 @@ public class RentalCalculator {
         double surcharge = getSurcharge(scanner);
 
         double optionalCost = tagPrice + gpsPrice;
+
+        System.out.println("---");
         displayReceipt(pickupDate, rentalDuration, optionalCost, surcharge);
 
     }
@@ -33,7 +35,7 @@ public class RentalCalculator {
         return duration;
     }
 
-    public static float addTollTag(Scanner scanner) {
+    public static float addTollTag(Scanner scanner) { // TODO: Add bool functionality
         System.out.print("electronic toll tag at $3.95/day (yes/no)? ");
         String response = scanner.nextLine();
 
@@ -45,7 +47,7 @@ public class RentalCalculator {
         return addOnTag;
     }
 
-    public static float addGPS(Scanner scanner) {
+    public static float addGPS(Scanner scanner) { // TODO: Add bool functionality
         System.out.print("GPS at $2.95/day (yes/no) ");
         String response = scanner.nextLine();
 
@@ -74,7 +76,9 @@ public class RentalCalculator {
 
     public static void displayReceipt(String pickUpDate, int rentalDuration,
                                       double optionalCost, double surcharge) {
-        // Implement as a receipt
+        // TODO: Implement clean optional price functionality
+        // TODO: Clean up display text
+
         double rentalPrice = baseRentalPrice * rentalDuration;
         System.out.printf("The basic car rental is $%.2f, which starts on %s.", baseRentalPrice, pickUpDate);
         System.out.printf("You'll have the rental for %d days which totals to $%.2f\n", rentalDuration, rentalPrice);
@@ -93,7 +97,5 @@ public class RentalCalculator {
         System.out.printf("Your grand total is $%.2f", totalPrice);
 
     }
-
-
 
 }
